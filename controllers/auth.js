@@ -80,9 +80,14 @@ export const verifyToken = async (req, res) => {
     await user.save();
     await sendWelcomeEmail(user.email, user.username);
     const userToken = await generateToken(user._id);
-    return res
-      .status(200)
-      .json({ message: "user verification complete", userToken });
+    return res.status(200).json({
+      message: "user verification complete",
+      userToken,
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
   } catch (error) {
     console.log("verification error", error.message);
     return res.status(500).json({ message: "an unknown error occurred" });
